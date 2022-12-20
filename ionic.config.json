@@ -1,5 +1,7 @@
 {
   "name": "FlotteAvionIonic",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "react"
 }

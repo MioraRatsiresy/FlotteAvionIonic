@@ -3,6 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@capacitor/app": "4.1.1",
+    "@capacitor/camera": "^4.1.4",
+    "@capacitor/core": "4.6.1",
+    "@capacitor/haptics": "4.1.0",
+    "@capacitor/keyboard": "4.1.0",
+    "@capacitor/status-bar": "4.1.1",
     "@ionic/react": "^6.0.0",
     "@ionic/react-router": "^6.0.0",
     "@testing-library/jest-dom": "^5.11.9",
@@ -45,7 +51,6 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
       "react-app/jest"
     ]
   },
@@ -61,5 +66,8 @@
       "last 1 safari version"
     ]
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "devDependencies": {
+    "@capacitor/cli": "4.6.1"
+  }
 }
