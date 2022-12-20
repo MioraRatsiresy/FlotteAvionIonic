@@ -1,7 +1,7 @@
 import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonLabel, IonRouterLink } from "@ionic/react";
 import './AssuranceExpiration.css';
 
-const VehiculeExpiration = ({ avion, fonction }: { avion: any, fonction: any }) => {
+const AssuranceExpiration = ({ avion, fonction }: { avion: any, fonction: any }) => {
     return (
         <div className="expiration">
             {avion.map((value1: string, j: number) => {
@@ -9,7 +9,7 @@ const VehiculeExpiration = ({ avion, fonction }: { avion: any, fonction: any }) 
                     <div className="panel panel-info" key={j}>
                         <IonCard color="light">
                             <IonCardHeader>
-                                <IonCardTitle><IonRouterLink onClick={fonction.bind(this, avion[j].id)}> {avion[j].immatriculation + " " + avion[j].categorie + " " + avion[j].modele}
+                                <IonCardTitle><IonRouterLink onClick={fonction.bind(this, avion[j].id)}> {avion[j].nom + " " + avion[j].constructeur}
                                 </IonRouterLink></IonCardTitle>
                             </IonCardHeader>
 
@@ -28,4 +28,4 @@ const VehiculeExpiration = ({ avion, fonction }: { avion: any, fonction: any }) 
     );
 };
 
-export default VehiculeExpiration;
+export default AssuranceExpiration;

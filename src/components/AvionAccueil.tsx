@@ -1,17 +1,19 @@
-import { IonButton, IonButtons, IonChip, IonContent, IonFooter, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonSegment, IonSegmentButton, IonSelect, IonSelectOption, IonTitle, IonToolbar, useIonAlert } from '@ionic/react';
+import { IonButton, IonButtons, IonChip, IonCol, IonContent, IonFab, IonFabButton, IonFooter, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonSegment, IonSegmentButton, IonSelect, IonSelectOption, IonTitle, IonToolbar, useIonAlert } from '@ionic/react';
 import axios from 'axios';
-import { list, car, logOut, airplane } from 'ionicons/icons';
+import { list, car, logOut, airplane, closeCircleOutline, camera } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import Avion from '../modele/Avion';
 import Vehicule from '../modele/Avion';
 import AvionListe from '../modele/AvionListe';
 import DetailVehicule from './DetailAvion';
 import TableauData from './TableauData';
-import VehiculeExpiration from './AssuranceExpiration';
+import AssuranceExpiration from './AssuranceExpiration';
+import { usePhotoGallery } from './Photo';
 
 
 var idAvion = 0;
 const ExploreContainer = () => {
+  const { photos, takePhoto } = usePhotoGallery();
   const [presentAlert] = useIonAlert();
   const [listeavion, setListeAvion] = useState<any>();
   const [assurancemois, setassurancemois] = useState<any>();
@@ -41,11 +43,13 @@ const ExploreContainer = () => {
         {
           type: 'text',
           placeholder: 'Email',
+          value: 'mada.sky@gmail.com',
           id: 'email'
         },
         {
           type: 'password',
           placeholder: 'Password',
+          value: 'madasky',
           id: 'pwd'
         },
       ],
@@ -75,8 +79,8 @@ const ExploreContainer = () => {
   //voir liste des vehicule via axios
   function voirliste() {
     //https://vehiculespring-production.up.railway.app/
-    //http://localhost:6942/
-    axios.get("http://localhost:6942/MadaSky/avions/liste").then((response) => {
+    //http://localhost:8080/
+    axios.get("http://localhost:8080/MadaSky/avions/liste").then((response) => {
       listeAvion(response.data);
     })
   }
@@ -98,8 +102,9 @@ const ExploreContainer = () => {
 
   //afficher detail via axios
   function afficherDetail(id: any) {
-    axios.get("http://localhost:6942/MadaSky/avions/" + id + "/detail/" + sessionStorage.getItem('TokenUtilisateur')).then((response) => {
+    axios.get("http://localhost:8080/MadaSky/avions/" + id + "/detail/" + sessionStorage.getItem('TokenUtilisateur')).then((response) => {
       if (response.data["erreur"] == null) {
+        console.log(response.data);
         AvionInformation(response.data);
       }
       else {
@@ -116,8 +121,8 @@ const ExploreContainer = () => {
 
 
     //kilometrage
-    var title_kilometrage = ['Date de décollage','Date Atterissage', 'Km début', 'Km fin'];
-    var tete_kilometrage = ['datedecollage','dateatterissage', 'kmdebut', 'kmfin'];
+    var title_kilometrage = ['Date de décollage', 'Date Atterissage', 'Km début', 'Km fin'];
+    var tete_kilometrage = ['datedecollage', 'dateatterrissage', 'kilometredebut', 'kmfin'];
 
 
     var liste = new AvionListe();
@@ -153,7 +158,7 @@ const ExploreContainer = () => {
       email = (emaildocument as HTMLInputElement).value;
     }
     // signInWithEmailAndPassword(email,pwd);
-    axios.post("http://localhost:6942/MadaSky/login/traitement?email=" + email + "&pwd=" + pwd).then((response) => {
+    axios.post("http://localhost:8080/MadaSky/login/traitement?email=" + email + "&pwd=" + pwd).then((response) => {
       if (response.data['message'] === "Login correcte") {
         sessionStorage.setItem("TokenUtilisateur", response.data['token']);
         if (idAvion != 0) {
@@ -175,7 +180,8 @@ const ExploreContainer = () => {
       loginalerte();
     }
     else {
-      axios.get("http://localhost:6942/MadaSky/avions/3/assurance/expiration/" + sessionStorage.getItem('TokenUtilisateur')).then((response) => {
+      axios.get("http://localhost:8080/MadaSky/avions/3/assurance/expiration/" + sessionStorage.getItem('TokenUtilisateur')).then((response) => {
+        console.log(response.data);
         var vc = Array();
         for (var item = 0; item < response.data["data"].length; item++) {
           vc[item] = new Avion();
@@ -197,16 +203,16 @@ const ExploreContainer = () => {
       loginalerte();
     }
     else {
-      axios.get("http://localhost:6942/MadaSky/avions/1/assurance/expiration/" + sessionStorage.getItem('TokenUtilisateur')).then((response) => {
+      axios.get("http://localhost:8080/MadaSky/avions/1/assurance/expiration/" + sessionStorage.getItem('TokenUtilisateur')).then((response) => {
         var vc = Array();
         for (var item = 0; item < response.data["data"].length; item++) {
           vc[item] = new Vehicule();
-          vc[item].categorie = response.data["data"][item]["categorie"];
-          vc[item].modele = response.data["data"][item]["modele"];
+          vc[item].nom = response.data["data"][item]["nom"];
+          vc[item].longueur = response.data["data"][item]["longueur"];
           vc[item].dateAssurance = response.data["data"][item]["dateAssurance"];
           vc[item].dateExpiration = response.data["data"][item]["dateExpiration"];
           vc[item].id = response.data["data"][item]["id"];
-          vc[item].immatriculation = response.data["data"][item]["immatriculation"];
+          vc[item].constructeur = response.data["data"][item]["constructeur"];
         }
         setassurancemois(vc);
         setListeAvion(undefined);
@@ -235,7 +241,7 @@ const ExploreContainer = () => {
         }
       }
     }
-    xmlhttp.open("GET", "http://localhost:6942/MadaSky/user/logout");
+    xmlhttp.open("GET", "http://localhost:8080/MadaSky/user/logout");
     xmlhttp.send();
   }
   function closeModal() {
@@ -251,7 +257,7 @@ const ExploreContainer = () => {
     if (inputvalue.length == 0) {
       inputvalue = "nothing";
     }
-    axios.get("http://localhost:6942/Avions/search/" + inputvalue).then((response) => {
+    axios.get("http://localhost:8080/Avions/search/" + inputvalue).then((response) => {
       listeAvion(response.data);
     });
   }
@@ -312,7 +318,7 @@ const ExploreContainer = () => {
               }
               {
                 assurancemois != undefined ?
-                  <VehiculeExpiration avion={assurancemois} fonction={afficherDetail}></VehiculeExpiration>
+                  <AssuranceExpiration avion={assurancemois} fonction={afficherDetail}></AssuranceExpiration>
                   : ''
               }
             </div>
@@ -323,12 +329,10 @@ const ExploreContainer = () => {
         <IonModal isOpen={isOpen}>
           <IonHeader>
             <IonToolbar>
-              <IonTitle>Detail</IonTitle>
+              <IonTitle>MadaSky <IonIcon icon={airplane}></IonIcon> Detail </IonTitle>
               <IonButtons slot="end">
                 <IonButton onClick={closeModal}>
-                  <IonChip>
-                    <IonLabel>X</IonLabel>
-                  </IonChip>
+                  <IonIcon icon={closeCircleOutline}></IonIcon>
                 </IonButton>
               </IonButtons>
             </IonToolbar>
@@ -339,8 +343,18 @@ const ExploreContainer = () => {
                 detail == undefined
                   ? ''
                   :
-                    <DetailVehicule detail={detail} kilometrage={kilometrage} />
+                  <DetailVehicule detail={detail} kilometrage={kilometrage} />
               }
+              {photos.map((photo, index) => (
+                            <IonCol size="6" key={index}>
+                                <IonImg src={photo.webviewPath} />
+                            </IonCol>
+                        ))}
+              <IonFab vertical="bottom" horizontal="center" slot="fixed">
+                <IonFabButton onClick={() => takePhoto()}>
+                  <IonIcon icon={camera}></IonIcon>
+                </IonFabButton>
+              </IonFab>
             </div>
           </IonContent>
         </IonModal>
@@ -351,7 +365,7 @@ const ExploreContainer = () => {
             <IonIcon icon={list} ></IonIcon>
           </IonSegmentButton>
           <IonSegmentButton value="assurance" onClick={showAssurance}>
-            <IonIcon icon={car}>
+            <IonIcon icon={airplane}>
             </IonIcon>
           </IonSegmentButton>
           {sessionStorage.getItem("TokenUtilisateur") != null ?

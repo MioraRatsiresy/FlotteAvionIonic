@@ -7,7 +7,7 @@ const TableauData = ({ listeavion }: { listeavion: AvionListe }) => {
             display: block;
             margin-left: auto;
             margin-right: auto;
-            margin-top:-100px;
+            margin-top:-80px;
             margin-left : 5px;
         }
         .card-title {
@@ -32,8 +32,7 @@ const TableauData = ({ listeavion }: { listeavion: AvionListe }) => {
                                         <div className="row g-0" key={i}>
                                             {listeavion.donnetitre[id] == 'photo' ?
 
-                                                <IonImg src={listeavion.donnee[i]['photo']} alt=""></IonImg>
-
+                                                <IonImg  src={listeavion.donnee[i]['photo']} alt=""></IonImg>
                                                 :
                                                 <IonLabel><strong className="card-title">{value}</strong><span> : {listeavion.donnee[i][listeavion.donnetitre[id]]}</span></IonLabel>
 
@@ -93,9 +92,6 @@ const TableauData = ({ listeavion }: { listeavion: AvionListe }) => {
                                                         <div className="col-8">
                                                             <div className="card-body">
                                                                 <h5 className="card-title"><IonRouterLink onClick={listeavion.fonction.bind(this, listeavion.donnee[j]["id"])} >{listeavion.donnee[j][listeavion.donnetitre[k]]}</IonRouterLink></h5>
-                                                                <div className="col">
-                                                                    <IonButton expand="block" color="warning" onClick={listeavion.fonctionupdate.bind(this, listeavion.donnee[j]["id"])}>Update</IonButton>
-                                                                </div>
                                                             </div>
                                                         </div>
                                                     </span>
