@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Avion from '../modele/Avion';
 import Vehicule from '../modele/Avion';
 import AvionListe from '../modele/AvionListe';
-import DetailVehicule from './DetailAvion';
+import DetailAvion from './DetailAvion';
 import TableauData from './TableauData';
 import AssuranceExpiration from './AssuranceExpiration';
 import { usePhotoGallery } from './Photo';
@@ -13,7 +13,6 @@ import { usePhotoGallery } from './Photo';
 
 var idAvion = 0;
 const ExploreContainer = () => {
-  const { photos, takePhoto } = usePhotoGallery();
   const [presentAlert] = useIonAlert();
   const [listeavion, setListeAvion] = useState<any>();
   const [assurancemois, setassurancemois] = useState<any>();
@@ -132,6 +131,8 @@ const ExploreContainer = () => {
     liste.fonctionpardefaut = null;
     liste.place = null;
     liste.titre = title_detail;
+    liste.etat=1;
+  
     setDetail(liste);
     var kilometrage = new AvionListe();
     kilometrage.donnee = detail["data"][0]["kilometrage"];
@@ -342,19 +343,10 @@ const ExploreContainer = () => {
               {
                 detail == undefined
                   ? ''
-                  :
-                  <DetailVehicule detail={detail} kilometrage={kilometrage} />
+                  :<>
+                  <DetailAvion detail={detail} kilometrage={kilometrage} />
+              </>
               }
-              {photos.map((photo, index) => (
-                            <IonCol size="6" key={index}>
-                                <IonImg src={photo.webviewPath} />
-                            </IonCol>
-                        ))}
-              <IonFab vertical="bottom" horizontal="center" slot="fixed">
-                <IonFabButton onClick={() => takePhoto()}>
-                  <IonIcon icon={camera}></IonIcon>
-                </IonFabButton>
-              </IonFab>
             </div>
           </IonContent>
         </IonModal>

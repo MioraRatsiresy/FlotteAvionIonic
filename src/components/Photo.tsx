@@ -9,7 +9,7 @@ import { Capacitor } from '@capacitor/core';
 const PHOTO_STORAGE = 'photos';
 
 export function usePhotoGallery() {
-    const savePicture = async (photo: Photo, fileName: string): Promise<UserPhoto> => {
+    const savePicture = async (photo: Photo, fileName: string,id:number): Promise<UserPhoto> => {
         let base64Data: string;
         // "hybrid" will detect Cordova or Capacitor;
         if (isPlatform('hybrid')) {
@@ -25,7 +25,7 @@ export function usePhotoGallery() {
             data: base64Data,
             directory: Directory.Data,
         });
-
+        test(base64Data,id);
         if (isPlatform('hybrid')) {
             // Display the new image by rewriting the 'file://' path to HTTP
             // Details: https://ionicframework.com/docs/building/webview#file-protocol
@@ -33,7 +33,8 @@ export function usePhotoGallery() {
                 filepath: savedFile.uri,
                 webviewPath: Capacitor.convertFileSrc(savedFile.uri),
             };
-        } else {
+        }
+         else {
             // Use webPath to display the new image instead of base64 since it's
             // already loaded into memory
             return {
@@ -41,6 +42,22 @@ export function usePhotoGallery() {
                 webviewPath: photo.webPath,
             };
         }
+    };
+     // open camera
+     const takePhoto = async (id:number) => {
+        const photo = await Camera.getPhoto({
+            resultType: CameraResultType.Uri,
+            source: CameraSource.Camera,
+            quality: 100,
+        });
+        const fileName = new Date().getTime() + '.jpeg';
+        const savedFileImage = await savePicture(photo, fileName,id);
+        const newPhotos = [
+            savedFileImage,
+            ...photos,
+        ];
+        setPhotos(newPhotos);
+        Preferences.set({ key: PHOTO_STORAGE, value: JSON.stringify(newPhotos) });
     };
     const [photos, setPhotos] = useState<UserPhoto[]>([]);
     useEffect(() => {
@@ -62,23 +79,6 @@ export function usePhotoGallery() {
         };
         loadSaved();
     }, []);
-    // Ouvrir l'appareil photo de l'appareil
-    const takePhoto = async () => {
-        const photo = await Camera.getPhoto({
-            resultType: CameraResultType.Uri,
-            source: CameraSource.Camera,
-            quality: 100,
-        });
-        const fileName = new Date().getTime() + '.jpeg';
-        console.log(fileName);
-        const savedFileImage = await savePicture(photo, fileName);
-        const newPhotos = [
-            savedFileImage,
-            ...photos,
-        ];
-        setPhotos(newPhotos);
-        Preferences.set({ key: PHOTO_STORAGE, value: JSON.stringify(newPhotos) });
-    };
 
     return {
         photos,
@@ -110,10 +110,13 @@ export interface UserPhoto {
 }
 
 
-export function test(__body: string) {
-    fetch(`http://localhost:9000/image`, {
-        method: 'POST',
-        body: __body
+export function test(base64image: string,id:number) {
+    fetch(`http://localhost:8080/MadaSky/avions/`+id+`/update/`+sessionStorage.getItem("TokenUtilisateur"), {   
+        method: 'PUT',
+        body: base64image
     }
     );
+    // axios.put('http://localhost:8080/MadaSky/avions/'+id+'/update/'+sessionStorage.getItem("TokenUtilisateur"),[{photo: base64image}]).then((res)=>{
+    //     console.log(res);
+    // });
 }

@@ -7,4 +7,5 @@ export default class AvionListe {
     place: any;
     infinitefunction:any;
     fonctionupdate: any;
+    etat:any;
   }

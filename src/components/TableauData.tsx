@@ -1,7 +1,10 @@
 import { IonButton, IonButtons, IonChip, IonContent, IonFab, IonFabButton, IonHeader, IonIcon, IonImg, IonInfiniteScroll, IonInfiniteScrollContent, IonInput, IonItem, IonLabel, IonList, IonModal, IonRouterLink, IonSelect, IonSelectOption, IonTitle, IonToolbar, useIonToast } from "@ionic/react";
+import { camera } from "ionicons/icons";
 import AvionListe from "../modele/AvionListe";
+import { usePhotoGallery } from "./Photo";
 
 const TableauData = ({ listeavion }: { listeavion: AvionListe }) => {
+    const { photos, takePhoto } = usePhotoGallery();
     const css = `
         .img{
             display: block;
@@ -32,7 +35,7 @@ const TableauData = ({ listeavion }: { listeavion: AvionListe }) => {
                                         <div className="row g-0" key={i}>
                                             {listeavion.donnetitre[id] == 'photo' ?
 
-                                                <IonImg  src={listeavion.donnee[i]['photo']} alt=""></IonImg>
+                                                <IonImg src={"data:image/jpeg;base64,"+listeavion.donnee[i]['photo']} alt=""></IonImg>
                                                 :
                                                 <IonLabel><strong className="card-title">{value}</strong><span> : {listeavion.donnee[i][listeavion.donnetitre[id]]}</span></IonLabel>
 
@@ -42,10 +45,21 @@ const TableauData = ({ listeavion }: { listeavion: AvionListe }) => {
                                 })
                             );
                         })}
+
                     </div>
                     : ''
                 }
             </div>
+            {
+                    listeavion.etat == 1 ?
+                        <IonFab vertical="bottom" horizontal="end">
+                            <IonFabButton  onClick={() => takePhoto(listeavion.donnee[0]["id"])}>
+                                <IonIcon icon={camera}></IonIcon>
+                            </IonFabButton>
+                        </IonFab>
+                        :
+                        ''
+                }
             <div>
                 {listeavion.fonction != null ?
                     <div>
@@ -58,7 +72,7 @@ const TableauData = ({ listeavion }: { listeavion: AvionListe }) => {
                                                 listeavion.donnetitre[k] == 'photo' ?
                                                     <span className="row g-0">
                                                         <div className="col-4">
-                                                            <IonImg src={listeavion.donnee[j]['photo']} className="img" alt=""></IonImg>
+                                                            <IonImg src={"data:image/jpeg;base64,"+listeavion.donnee[j]['photo']} className="img" alt=""></IonImg>
                                                         </div>
                                                         <div className="col-8">
 
@@ -79,13 +93,13 @@ const TableauData = ({ listeavion }: { listeavion: AvionListe }) => {
                                                 listeavion.donnetitre[k] == 'photo' ?
                                                     <span className="row g-0">
                                                         <div className="col-4">
-                                                            <IonImg src={listeavion.donnee[j]['photo']} className="img" alt=""></IonImg>
+                                                            <IonImg src={"data:image/jpeg;base64,"+listeavion.donnee[j]['photo']} className="img" alt=""></IonImg>
                                                         </div>
                                                         <div className="col-8">
 
                                                         </div>
                                                     </span>
-                                                    : <span className="row g-0">
+                                                    : <><span className="row g-0">
                                                         <div className="col-4">
 
                                                         </div>
@@ -95,6 +109,7 @@ const TableauData = ({ listeavion }: { listeavion: AvionListe }) => {
                                                             </div>
                                                         </div>
                                                     </span>
+                                                    </>
                                             }
                                         </div>
                                         );
@@ -120,7 +135,7 @@ const TableauData = ({ listeavion }: { listeavion: AvionListe }) => {
                     : ''
             }
 
-         
+
         </>
     );
 };
